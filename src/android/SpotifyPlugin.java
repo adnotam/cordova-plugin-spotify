@@ -95,7 +95,7 @@ public class SpotifyPlugin extends CordovaPlugin implements
     @Override
     public boolean execute(String action, JSONArray data, CallbackContext callbackContext) {
         Boolean success = false;
-
+        Log.i(TAG, "PLUGIN_EXECUTE: " + action);
         if (ACTION_LOGIN.equalsIgnoreCase(action)) {
             Log.i(TAG, "LOGIN");
             JSONArray scopes = new JSONArray();
@@ -139,7 +139,8 @@ public class SpotifyPlugin extends CordovaPlugin implements
             } catch (JSONException e) {
                 Log.e(TAG, e.toString());
             }
-            this.auth(token, id);
+            this.auth(token, id, callbackContext);
+            success = true;
         } else if (ACTION_PAUSE.equalsIgnoreCase(action)) {
             this.pause();
             success = true;
@@ -216,7 +217,7 @@ public class SpotifyPlugin extends CordovaPlugin implements
         return success;
     }
 
-    private void auth(String token, String id) {
+    private void auth(String token, String id, CallbackContext callbackContext) {
         Log.d(TAG, "auth()");
         if (currentPlayer == null) {
 
@@ -234,6 +235,7 @@ public class SpotifyPlugin extends CordovaPlugin implements
                     currentPlayer.setConnectivityStatus(mOperationCallback, getNetworkConnectivity(cordova.getActivity().getApplicationContext()));
                     currentPlayer.addNotificationCallback(SpotifyPlugin.this);
                     currentPlayer.addConnectionStateCallback(SpotifyPlugin.this);
+                    callbackContext.success();
 // Trigger UI refresh
                 }
 
