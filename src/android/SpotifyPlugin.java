@@ -238,7 +238,7 @@ public class SpotifyPlugin extends CordovaPlugin implements
                     callbackContext.success();
                     JSONArray array = new JSONArray();
                     array.put("Init success");
-                    sendUpdate(".onSuccess", new Object[]{array});
+                    sendUpdate("onSuccess", new Object[]{array});
 // Trigger UI refresh
                 }
 
@@ -248,7 +248,7 @@ public class SpotifyPlugin extends CordovaPlugin implements
                     callbackContext.error("ERROR_FROM_AUTH");
                     JSONArray array = new JSONArray();
                     array.put("invalid access token");
-                    sendUpdate(".onError", new Object[]{array});
+                    sendUpdate("onError", new Object[]{array});
                 }
             });
 
