@@ -6,9 +6,6 @@
     </js-module>
 
     <platform name="android">
-        <config-file target="app/src/main/AndroidManifest.xml" parent="/manifest">
-            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-        </config-file>
         <config-file parent="/*" target="res/xml/config.xml">
         <feature name="SpotifyPlugin"><param name="android-package" value="cordova.plugin.spotify.SpotifyPlugin" />
         </feature>
@@ -23,6 +20,12 @@
         <source-file src="src/android/SpotifyPlugin.java" target-dir="src/cordova/plugin/spotify/" />
         <source-file src="src/android/SpotifyPluginController.java" target-dir="src/cordova/plugin/spotify/" />
         <framework custom="true" src="src/android/spotify.gradle" type="gradleReference" />
+        
+        <config-file target="app/src/main/AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+        </config-file>
     </platform>
     
     <platform name="ios">
