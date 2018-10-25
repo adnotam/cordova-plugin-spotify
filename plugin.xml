@@ -22,7 +22,7 @@
         <source-file src="src/android/SpotifyPluginController.java" target-dir="src/cordova/plugin/spotify/" />
         <framework custom="true" src="src/android/spotify.gradle" type="gradleReference" />
         
-        <config-file target="app/src/main/AndroidManifest.xml" parent="/manifest/application" mode="merge">
+        <config-file target="app/src/main/AndroidManifest.xml" parent="/manifest">
             <resource-file src="platforms/android/app/src/main/AndroidManifest.xml" target="AndroidManifest.xml" />
             <uses-permission android:name="android.permission.INTERNET" />
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
