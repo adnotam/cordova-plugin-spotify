@@ -21,10 +21,10 @@ module.exports = {
                         [token,id]
                         )
                    },
-    play:function(val){
+    play:function(success, error, val){
         exec(
-                     function() {},
-                     function() {},
+                     success,
+                     error,
                      "SpotifyPlugin",
                      "play",
                      [val]
