@@ -26,7 +26,12 @@
         <source-file src="src/android/SpotifyPlugin.java" target-dir="src/cordova/plugin/spotify/" />
         <source-file src="src/android/SpotifyPluginController.java" target-dir="src/cordova/plugin/spotify/" />
         <framework custom="true" src="src/android/spotify.gradle" type="gradleReference" />
-        
+
+        <config-file target="app/src/main/AndroidManifest.xml" parent="/manifest/application">
+            <activity android:name="com.spotify.sdk.android.authentication.LoginActivity"
+            android:label="@string/app_name" android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        </config-file>
+
         <config-file target="app/src/main/AndroidManifest.xml" parent="/manifest">
             <uses-permission android:name="android.permission.INTERNET" />
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
