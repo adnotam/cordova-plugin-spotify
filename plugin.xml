@@ -4,8 +4,6 @@
     <js-module name="SpotifyPlugin" src="www/SpotifyPlugin.js">
         <clobbers target="cordova.plugins.SpotifyPlugin" />
     </js-module>
-    
-    <preference name="URL_SCHEME_LT" />
 
     <platform name="android">
         <config-file target="AndroidManifest.xml" parent="/manifest">
@@ -17,7 +15,7 @@
         </config-file>
 
         <config-file target="./res/values/strings.xml" parent="/resources">
-            <string name="redirect_uri">$URL_SCHEME_LT</string>
+            <string name="redirect_uri">"http://localhost:3000/callback"</string>
         </config-file>
         
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
