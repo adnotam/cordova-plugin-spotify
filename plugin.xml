@@ -20,9 +20,9 @@
         <config-file target="./res/values/strings.xml" parent="/resources">
             <string name="redirect_uri">"http://localhost:3000/callback"</string>
         </config-file>
-
-        <source-file src="libs/spotify-auth-beta23-noconnect-2.20b.aar" target-dir="libs/" />
-        <source-file src="libs/spotify-player-beta23-noconnect-2.20b.aar" target-dir="libs/" />
+        
+        <source-file src="libs/spotify-auth-beta23-noconnect-2.20b.aar" target-dir="app/libs/" />
+        <source-file src="libs/spotify-player-beta23-noconnect-2.20b.aar" target-dir="app/libs/" />
         <source-file src="src/android/SpotifyPlugin.java" target-dir="src/cordova/plugin/spotify/" />
         <source-file src="src/android/SpotifyPluginController.java" target-dir="src/cordova/plugin/spotify/" />
         <framework custom="true" src="src/android/spotify.gradle" type="gradleReference" />
