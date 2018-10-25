@@ -2,8 +2,8 @@ var exec = require('cordova/exec');
                
 module.exports = {
     login : function(a,b,url) {
-        let swap = url+'/swap';
-        let refresh = url+ '/refresh';
+        var swap = url+'/swap';
+        var refresh = url+ '/refresh';
         exec(
                      function() {},
                      function() {},
