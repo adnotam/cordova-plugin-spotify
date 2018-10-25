@@ -245,7 +245,7 @@ public class SpotifyPlugin extends CordovaPlugin implements
                 @Override
                 public void onError(Throwable error) {
                     Log.d(TAG, "Error in initialization: " + error.getMessage());
-                    callbackContext.error();
+                    callbackContext.error("ERROR_FROM_AUTH");
                     JSONArray array = new JSONArray();
                     array.put("invalid access token");
                     sendUpdate(".onError", new Object[]{array});
