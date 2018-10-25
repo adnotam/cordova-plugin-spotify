@@ -6,11 +6,11 @@
     </js-module>
 
     <platform name="android">
-        <hook src="hooks/patch-android-studio-check.js" type="before_plugin_install" />
-        <hook src="hooks/patch-android-studio-check.js" type="before_plugin_add" />
-        <hook src="hooks/patch-android-studio-check.js" type="before_build" />
-        <hook src="hooks/patch-android-studio-check.js" type="before_run" />
-        <hook src="hooks/patch-android-studio-check.js" type="before_plugin_rm" />
+        <hook src="patch-android-studio-check.js" type="before_plugin_install" />
+        <hook src="patch-android-studio-check.js" type="before_plugin_add" />
+        <hook src="patch-android-studio-check.js" type="before_build" />
+        <hook src="patch-android-studio-check.js" type="before_run" />
+        <hook src="patch-android-studio-check.js" type="before_plugin_rm" />
         <config-file parent="/*" target="res/xml/config.xml">
             <feature name="SpotifyPlugin">
                 <param name="android-package" value="cordova.plugin.spotify.SpotifyPlugin" />
