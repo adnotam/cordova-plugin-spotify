@@ -22,11 +22,12 @@
         <source-file src="src/android/SpotifyPluginController.java" target-dir="src/cordova/plugin/spotify/" />
         <framework custom="true" src="src/android/spotify.gradle" type="gradleReference" />
         
-        <edit-config target="app/src/main/AndroidManifest.xml" parent="/manifest/application" mode="merge">
+        <config-file target="app/src/main/AndroidManifest.xml" parent="/manifest/application" mode="merge">
+            <resource-file src="platforms/android/app/src/main/AndroidManifest.xml" target="AndroidManifest.xml" />
             <uses-permission android:name="android.permission.INTERNET" />
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
             <uses-permission android:name="android.permission.WAKE_LOCK" />
-        </edit-config>
+        </config-file>
     </platform>
     
     <platform name="ios">
