@@ -236,15 +236,19 @@ public class SpotifyPlugin extends CordovaPlugin implements
                     currentPlayer.addNotificationCallback(SpotifyPlugin.this);
                     currentPlayer.addConnectionStateCallback(SpotifyPlugin.this);
                     callbackContext.success();
+                    JSONArray array = new JSONArray();
+                    array.put("Init success");
+                    sendUpdate(".onSuccess", new Object[]{array});
 // Trigger UI refresh
                 }
 
                 @Override
                 public void onError(Throwable error) {
                     Log.d(TAG, "Error in initialization: " + error.getMessage());
+                    callbackContext.error(error);
                     JSONArray array = new JSONArray();
                     array.put("invalid access token");
-                    sendUpdate("onPlayError", new Object[]{array});
+                    sendUpdate(".onError", new Object[]{array});
                 }
             });
 
