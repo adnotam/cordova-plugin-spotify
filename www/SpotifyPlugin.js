@@ -12,10 +12,10 @@ module.exports = {
                      [a,b,swap,refresh]
                      )
     },
-     auth : function(token,id){
+     auth : function(success, error, token,id){
                    exec(
-                        function() {},
-                        function() {},
+                        success,
+                        error,
                         "SpotifyPlugin",
                         "auth",
                         [token,id]
