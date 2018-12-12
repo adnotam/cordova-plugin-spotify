@@ -31,6 +31,9 @@ import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.SpotifyPlayer;
 
+import java.net.*;
+import java.io.*;
+
 /**
  * Created by Aleksey on 10/10/2016.
  */
@@ -55,6 +58,12 @@ public class SpotifyPlugin extends CordovaPlugin implements
     private static final String METHOD_SEND_TO_JS_OBJ = "window.cordova.plugins.SpotifyPlugin.Events.";
     private static final String ACTION_GET_POSITON = "getPosition";
     private static final String ACTION_GET_TOKEN = "getToken";
+    private static final String ACTION_LOAD_PALAYLISTS = "playlists";
+    private static final String ACTION_LOAD_PLAYLIST_TRACKS = "playlistTracks";
+    private static final String ACTION_LOAD_ALBUMS = "albums";
+    private static final String ACTION_LOAD_ALBUM_TRACKS = "albumTracks";
+    private static final String ACTION_LOAD_FEATURED = "featuredPls";
+    private static final String ACTION_LOAD_FEATURED_TRACKS = "featuredTracks";
     private static final int REQUEST_CODE = 1337;
 
     private String clientId;// ="4eb7b5c08bee4d759d34dbc1823fd7c5";
@@ -93,10 +102,109 @@ public class SpotifyPlugin extends CordovaPlugin implements
     }
 
     @Override
-    public boolean execute(String action, JSONArray data, CallbackContext callbackContext) {
+    public boolean execute(String action, JSONArray data, CallbackContext callbackContext)  {
         Boolean success = false;
         Log.i(TAG, "PLUGIN_EXECUTE: " + action);
-        if (ACTION_LOGIN.equalsIgnoreCase(action)) {
+        if(ACTION_LOAD_ALBUMS.equalsIgnoreCase(action)) {
+          try {
+            String token = "";
+            try {
+              token = data.getString(0);
+            } catch (JSONException e) {
+              Log.e(TAG, e.toString());
+            }
+            this.loadUserAlbums(token, callbackContext);
+            success = true;
+
+          } catch(Exception error) {
+
+          }
+        } else if(ACTION_LOAD_ALBUM_TRACKS.equalsIgnoreCase(action)) {
+          Log.d(TAG, "LOADING USER ALBUM TRACKS");
+          try {
+            String id = "";
+            String token = "";
+            try {
+              id = data.getString(0);
+              token = data.getString(1);
+            } catch (JSONException e) {
+              Log.e(TAG, e.toString());
+            }
+            this.loadUserAlbumTracks(id, token, callbackContext);
+            success = true;
+
+          } catch(Exception error) {
+
+          }
+        } else if(ACTION_LOAD_PALAYLISTS.equalsIgnoreCase(action)) {
+          Log.d(TAG, "LOADING USER PLAYLISTS");
+          try {
+            String token = "";
+            try {
+              token = data.getString(0);
+            } catch (JSONException e) {
+              Log.e(TAG, e.toString());
+            }
+            this.loadUserPlaylists(token, callbackContext);
+            success = true;
+
+          } catch(Exception error) {
+
+          }
+        } else if(ACTION_LOAD_PLAYLIST_TRACKS.equalsIgnoreCase(action)) {
+          Log.d(TAG, "LOADING USER PLAYLIST TRACKS");
+          try {
+            String id = "";
+            String token = "";
+            try {
+              id = data.getString(0);
+              token = data.getString(1);
+            } catch (JSONException e) {
+              Log.e(TAG, e.toString());
+            }
+            this.loadUserPlaylistTracks(id, token, callbackContext);
+            success = true;
+
+          } catch(Exception error) {
+            Log.d(TAG, "LOADING USER PLAYLIST TRACKS ERR: " + error.getMessage());
+            JSONArray array = new JSONArray();
+            array.put(error.getMessage());
+            sendUpdate("onError", new Object[]{array});
+            callbackContext.error(error.getMessage());
+          }
+        } else if(ACTION_LOAD_FEATURED.equalsIgnoreCase(action)) {
+          Log.d(TAG, "LOADING FEATURED PLAYLISTS");
+          try {
+            String token = "";
+            try {
+              token = data.getString(0);
+            } catch (JSONException e) {
+              Log.e(TAG, e.toString());
+            }
+            this.loadFeaturedPlaylists(token, callbackContext);
+            success = true;
+
+          } catch(Exception error) {
+
+          }
+        } else if(ACTION_LOAD_FEATURED_TRACKS.equalsIgnoreCase(action)) {
+          Log.d(TAG, "LOADING USER PLAYLIST TRACKS");
+          try {
+            String id = "";
+            String token = "";
+            try {
+              id = data.getString(0);
+              token = data.getString(1);
+            } catch (JSONException e) {
+              Log.e(TAG, e.toString());
+            }
+            this.loadFeaturedTracks(id, token, callbackContext);
+            success = true;
+
+          } catch(Exception error) {
+
+          }
+        } else if (ACTION_LOGIN.equalsIgnoreCase(action)) {
             Log.i(TAG, "LOGIN");
             JSONArray scopes = new JSONArray();
             Boolean fetchTokenManually = false;
@@ -128,7 +236,7 @@ public class SpotifyPlugin extends CordovaPlugin implements
                 Log.e(TAG, e.toString());
             }
 
-            this.play(uri);
+            this.play(uri, callbackContext);
             success = true;
         } else if (ACTION_AUTH.equalsIgnoreCase(action)) {
             String token = "";
@@ -161,7 +269,7 @@ public class SpotifyPlugin extends CordovaPlugin implements
             } catch (JSONException e) {
                 Log.e(TAG, e.toString());
             }
-            this.playAlbum(uri);
+            this.playAlbum(uri, callbackContext);
             success = true;
         } else if (ACTION_PLAY_PLAYLIST.equalsIgnoreCase(action)) {
             String uri = "";
@@ -171,7 +279,7 @@ public class SpotifyPlugin extends CordovaPlugin implements
             } catch (JSONException e) {
                 Log.e(TAG, e.toString());
             }
-            this.playPlayList(uri);
+            this.playPlayList(uri, callbackContext);
             success = true;
         } else if (ACTION_LOG_OUT.equalsIgnoreCase(action)) {
             this.logout();
@@ -207,7 +315,7 @@ public class SpotifyPlugin extends CordovaPlugin implements
             this.setVolume(val);
             success = true;
         } else if (ACTION_GET_POSITON.equalsIgnoreCase(action)) {
-            this.getPosition();
+            this.getPosition(callbackContext);
             success = true;
         } else if (ACTION_GET_TOKEN.equalsIgnoreCase(action)) {
             this.getToken(callbackContext);
@@ -217,45 +325,175 @@ public class SpotifyPlugin extends CordovaPlugin implements
         return success;
     }
 
+    public void loadUserAlbums(String authToken, CallbackContext callbackContext) throws Exception {
+      URL urlConnection = new URL("https://api.spotify.com/v1/me/albums?limit=50");
+      HttpURLConnection connection = (HttpURLConnection) urlConnection.openConnection();
+      connection.setRequestProperty("Content-Type", "application/json");
+      connection.setRequestProperty("Authorization", "Bearer " + authToken);
+
+      StringBuilder result = new StringBuilder();
+      try {
+        InputStream in = new BufferedInputStream(connection.getInputStream());
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+        String line;
+          while ((line = reader.readLine()) != null) {
+              result.append(line);
+          }
+      } finally {
+        connection.disconnect();
+      }
+
+      callbackContext.success(result.toString());
+    }
+
+    public void loadUserAlbumTracks(String id, String authToken, CallbackContext callbackContext) throws Exception {
+      URL urlConnection = new URL("https://api.spotify.com/v1/albums/" + id + "/tracks");
+      HttpURLConnection connection = (HttpURLConnection) urlConnection.openConnection();
+      connection.setRequestProperty("Content-Type", "application/json");
+      connection.setRequestProperty("Authorization", "Bearer " + authToken);
+
+      StringBuilder result = new StringBuilder();
+      try {
+        InputStream in = new BufferedInputStream(connection.getInputStream());
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+        String line;
+          while ((line = reader.readLine()) != null) {
+              result.append(line);
+          }
+      } finally {
+        connection.disconnect();
+      }
+
+      callbackContext.success(result.toString());
+    }
+
+    public void loadUserPlaylists(String authToken, CallbackContext callbackContext) throws Exception {
+      URL urlConnection = new URL("https://api.spotify.com/v1/me/playlists?limit=50");
+      HttpURLConnection connection = (HttpURLConnection) urlConnection.openConnection();
+      connection.setRequestProperty("Content-Type", "application/json");
+      connection.setRequestProperty("Authorization", "Bearer " + authToken);
+
+      StringBuilder result = new StringBuilder();
+      try {
+        InputStream in = new BufferedInputStream(connection.getInputStream());
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+        String line;
+          while ((line = reader.readLine()) != null) {
+              result.append(line);
+          }
+      } finally {
+        connection.disconnect();
+      }
+
+      callbackContext.success(result.toString());
+    }
+
+    public void loadUserPlaylistTracks(String id, String authToken, CallbackContext callbackContext) throws Exception {
+      URL urlConnection = new URL("https://api.spotify.com/v1/playlists/" + id + "/tracks");
+      HttpURLConnection connection = (HttpURLConnection) urlConnection.openConnection();
+      connection.setRequestProperty("Content-Type", "application/json");
+      connection.setRequestProperty("Authorization", "Bearer " + authToken);
+
+      StringBuilder result = new StringBuilder();
+      try {
+        InputStream in = new BufferedInputStream(connection.getInputStream());
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+        String line;
+          while ((line = reader.readLine()) != null) {
+              result.append(line);
+          }
+      } catch(Exception error) {
+        callbackContext.error(error.getMessage());
+      } finally {
+        connection.disconnect();
+      }
+
+      callbackContext.success(result.toString());
+    }
+
+    public void loadFeaturedPlaylists(String authToken, CallbackContext callbackContext) throws Exception {
+      URL urlConnection = new URL("https://api.spotify.com/v1/browse/featured-playlists");
+      HttpURLConnection connection = (HttpURLConnection) urlConnection.openConnection();
+      connection.setRequestProperty("Content-Type", "application/json");
+      connection.setRequestProperty("Authorization", "Bearer " + authToken);
+
+      StringBuilder result = new StringBuilder();
+      try {
+        InputStream in = new BufferedInputStream(connection.getInputStream());
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+        String line;
+          while ((line = reader.readLine()) != null) {
+              result.append(line);
+          }
+      } finally {
+        connection.disconnect();
+      }
+
+      callbackContext.success(result.toString());
+    }
+
+    public void loadFeaturedTracks(String id, String authToken, CallbackContext callbackContext) throws Exception {
+      URL urlConnection = new URL("https://api.spotify.com/v1/playlists/" + id + "/tracks");
+      HttpURLConnection connection = (HttpURLConnection) urlConnection.openConnection();
+      connection.setRequestProperty("Content-Type", "application/json");
+      connection.setRequestProperty("Authorization", "Bearer " + authToken);
+
+      StringBuilder result = new StringBuilder();
+      try {
+        InputStream in = new BufferedInputStream(connection.getInputStream());
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+        String line;
+          while ((line = reader.readLine()) != null) {
+              result.append(line);
+          }
+      } finally {
+        connection.disconnect();
+      }
+
+      callbackContext.success(result.toString());
+    }
+
     private void auth(String token, String id, CallbackContext callbackContext) {
-        Log.d(TAG, "auth()");
-        if (currentPlayer == null) {
+      Log.d(TAG, "auth()");
+      if (currentPlayer == null) {
+        Config playerConfig = new Config(cordova.getActivity(), token, id);
+        currentPlayer = Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
 
-            Config playerConfig = new Config(cordova.getActivity(), token, id);
-// Since the Player is a static singleton owned by the Spotify class, we pass "this" as
-// the second argument in order to refcount it properly. Note that the method
-// Spotify.destroyPlayer() also takes an Object argument, which must be the same as the
-// one passed in here. If you pass different instances to Spotify.getPlayer() and
-// Spotify.destroyPlayer(), that will definitely result in resource leaks.
-            currentPlayer = Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
+          @Override
+          public void onInitialized(SpotifyPlayer player) {
+            Log.d(TAG, "-- Player initialized --");
+            currentPlayer.setConnectivityStatus(mOperationCallback, getNetworkConnectivity(cordova.getActivity().getApplicationContext()));
+            currentPlayer.addNotificationCallback(SpotifyPlugin.this);
+            currentPlayer.addConnectionStateCallback(SpotifyPlugin.this);
+            JSONArray array = new JSONArray();
+            array.put("Init success");
+            sendUpdate("onSuccess", new Object[]{array});
+            callbackContext.success("Init success");
+          }
 
-                @Override
-                public void onInitialized(SpotifyPlayer player) {
-                    Log.d(TAG, "-- Player initialized --");
-                    currentPlayer.setConnectivityStatus(mOperationCallback, getNetworkConnectivity(cordova.getActivity().getApplicationContext()));
-                    currentPlayer.addNotificationCallback(SpotifyPlugin.this);
-                    currentPlayer.addConnectionStateCallback(SpotifyPlugin.this);
-                    callbackContext.success();
-                    JSONArray array = new JSONArray();
-                    array.put("Init success");
-                    sendUpdate("onSuccess", new Object[]{array});
-// Trigger UI refresh
-                }
-
-                @Override
-                public void onError(Throwable error) {
-                    Log.d(TAG, "Error in initialization: " + error.getMessage());
-                    callbackContext.error("ERROR_FROM_AUTH");
-                    JSONArray array = new JSONArray();
-                    array.put("invalid access token");
-                    sendUpdate("onError", new Object[]{array});
-                }
-            });
-
-
-        } else {
-            currentPlayer.login(token);
-        }
+          @Override
+          public void onError(Throwable error) {
+              Log.d(TAG, "Error in initialization: " + error.getMessage());
+              JSONArray array = new JSONArray();
+              array.put("invalid access token");
+              sendUpdate("onPlayError", new Object[]{array});
+          }
+        });
+      } else {
+          currentPlayer.login(token);
+      }
     }
 
     private void getToken(CallbackContext callbackContext) {
@@ -269,10 +507,11 @@ public class SpotifyPlugin extends CordovaPlugin implements
 
     }
 
-    private void getPosition() {
+    private void getPosition(CallbackContext callbackContext) {
         int x = (int) currentPlayer.getPlaybackState().positionMs;
         Log.d(TAG, "position = " + x);
-        sendUpdate("onPosition", new Object[]{x});
+        // sendUpdate("onPosition", new Object[]{x});
+        callbackContext.success(x);
 
     }
 
@@ -313,7 +552,7 @@ public class SpotifyPlugin extends CordovaPlugin implements
     private final Player.OperationCallback mOperationCallback = new Player.OperationCallback() {
         @Override
         public void onSuccess() {
-            Log.d(TAG, "OK!");
+            Log.d(TAG, "Success!");
         }
 
         @Override
@@ -353,14 +592,14 @@ public class SpotifyPlugin extends CordovaPlugin implements
         //this.login(clientId);
     }
 
-    public void playAlbum(String id) {
+    public void playAlbum(String id, CallbackContext callbackContext) {
         Log.d(TAG, "PLAYING ALBUM");
-        this.play(id);
+        this.play(id, callbackContext);
     }
 
-    public void playPlayList(String id) {
+    public void playPlayList(String id, CallbackContext callbackContext) {
         Log.d(TAG, "PLAYING playListPlay");
-        this.play(id);
+        this.play(id, callbackContext);
     }
 
     public void next() {
@@ -375,21 +614,29 @@ public class SpotifyPlugin extends CordovaPlugin implements
 
     }
 
-    private void play(String uri) {
+    private void play(String uri,CallbackContext callbackContext) {
         if (currentPlayer == null) {
             JSONArray array = new JSONArray();
-            array.put("player did not initialize");
-            sendUpdate("onPlayError", new Object[]{array});
+            array.put("Player did not initialize");
+            sendUpdate("onError", new Object[]{array});
+            callbackContext.error("Player did not initialized");
             return;
         }
         if (!currentPlayer.isLoggedIn()) {
             Log.e(TAG, "Current Player is initialized but player is not logged in, set access token manually or call login with fetchTokenManually : false");
+            JSONArray array = new JSONArray();
+            array.put("Player did not authorized");
+            sendUpdate("onError", new Object[]{array});
+            callbackContext.error("Player did not authorized");
             return;
         }
 
         Log.i(TAG, "Playing URI: " + uri);
-
+        JSONArray array = new JSONArray();
+        array.put("Player is playing!");
+        sendUpdate("onSuccess", new Object[]{array});
         currentPlayer.playUri(mOperationCallback, uri, 0, 0);
+        callbackContext.success("Player is playing!");
     }
 
 
@@ -517,7 +764,7 @@ public class SpotifyPlugin extends CordovaPlugin implements
         Log.d("MainActivity", "User logged in");
         JSONArray array = new JSONArray();
         array.put("logged in");
-        sendUpdate("onLogedIn", new Object[]{array});
+        // sendUpdate("onLogedIn", new Object[]{array});
     }
 
     @Override
@@ -597,7 +844,7 @@ public class SpotifyPlugin extends CordovaPlugin implements
             sendUpdate("onPlay", new Object[]{array});
             int x = (int) currentPlayer.getPlaybackState().positionMs;
             Log.d(TAG, "position = " + x);
-            sendUpdate("onPosition", new Object[]{x});
+            // sendUpdate("onPosition", new Object[]{x});
 
         } else if (playerEvent.name().equals(EVENT_AUDIO_FLASH)) {
             Log.d(TAG, "player audio flush" + mCurrentPlaybackState.positionMs + "ms");
@@ -688,6 +935,4 @@ public class SpotifyPlugin extends CordovaPlugin implements
         });
 
     }
-
-
 }
