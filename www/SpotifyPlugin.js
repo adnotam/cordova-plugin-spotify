@@ -3,17 +3,24 @@ var axios = require('axios);
 
 module.exports = {
   login: function(a, b, url) {
-    var swap = url + '/swap';
-    var refresh = url + '/refresh';
-    
-    exec(
-      function() { },
-      function() { },
-      "SpotifyPlugin",
-      "login",
-      [a, b, swap, refresh]
-    );
-  },
+      var swap = url + '/swap';
+      var refresh = url + '/refresh';
+
+      exec(
+        function() { },
+        function() { },
+        "SpotifyPlugin",
+        "login",
+        [a, b, swap, refresh]
+      );
+    },
+  loadUserPlaylists: function(success, error, token) { exec(success, error, "SpotifyPlugin", "playlists", [token]); },
+  loadUserAlbums: function(success, error, token) { exec(success, error, "SpotifyPlugin", "albums", [token]); },
+  loadFeaturedPlaylists: function(success, error, token) { exec(success, error, "SpotifyPlugin", "featuredPls", [token]); },
+  loadUserAlbumTracks: function(success, error, id, token) { exec(success, error, "SpotifyPlugin", "albumTracks", [id, token]); },
+  loadUserPlaylistTracks: function(success, error, id, token) { exec(success, error, "SpotifyPlugin", "playlistTracks", [id, token]); },
+  loadFeaturedTracks: function(success, error, id, token) { exec(success, error, "SpotifyPlugin", "featuredTracks", [id, token]); },
+  getPosition: function(success, error) { exec(success, error, "SpotifyPlugin", "getPosition", []); },
   auth: function(success, error, token, id) {
     exec(
       success,
@@ -104,89 +111,6 @@ module.exports = {
       []
     );
   },
-  loadUserPlaylists: function() {
-    return axios.get('https://api.spotify.com/v1/me/playlists?limit=50', { headers: { Authorization: 'Bearer ' + authToken } })
-      .then(function(response) {
-        if(response) {
-          return response.data.items;
-        }
-      })
-      .catch(function(error) {
-        return error.response.data.error;
-      });
-  },
-
-  loadUserPlaylistTracks: function(id) {
-    return axios.get(`https://api.spotify.com/v1/playlists/${id}/tracks`, { headers: { Authorization: 'Bearer ' + authToken } })
-      .then(function(response) {
-        if(response) {
-          return response.data.items;
-        }
-      })
-      .catch(function(error) {
-        return error.response.data.error;
-      });
-  },
-
-  loadUserAlbums: function() {
-    return axios.get('https://api.spotify.com/v1/me/albums?limit=50', { headers: { Authorization: 'Bearer ' + authToken } })
-      .then(function(response) {
-        if(response) {
-          return response.data.items;
-        }
-      })
-      .catch(function(error) {
-        return error.response.data.error;
-      });
-  },
-
-  loadUserAlbumTracks: function(id) {
-    return axios.get(`https://api.spotify.com/v1/albums/${id}/tracks`, { headers: { Authorization: 'Bearer ' + authToken } })
-      .then(function(response) {
-        if(response) {
-          return response.data.items;
-        }
-      })
-      .catch(function(error) {
-        return error.response.data.error;
-      });
-  },
-
-  loadUserArtists: function() {
-    return axios.get('https://api.spotify.com/v1/me/following?type=artist', { headers: { Authorization: 'Bearer ' + authToken } })
-      .then(function(response) {
-        if(response) {
-          return response.data.items;
-        }
-      })
-      .catch(function(error) {
-        return error.response.data.error;
-      });
-  },
-
-  loadFeaturedPlaylists: function() {
-    return axios.get('https://api.spotify.com/v1/browse/featured-playlists', { headers: { Authorization: 'Bearer ' + authToken } })
-      .then(function(response) {
-        if(response) {
-          return response.data.items;
-        }
-      })
-      .catch(function(error) {
-        return error.response.data.error;
-      });
-  },
-
-  loadFeaturedPlaylistracks: function(id) {
-    return axios.get(`https://api.spotify.com/v1/albums/${id}/tracks`, { headers: { Authorization: 'Bearer ' + authToken } })
-      .then(function(response) {
-        if(response) {
-          return response.data.items;
-        }
-      })
-      .catch(function(error) {
-        return error.response.data.error;
-      });
-  },
 
   Events: {
     onPlayerPlay: function(args) { },
@@ -224,5 +148,6 @@ module.exports = {
     onPlayError: function(error) {
       alert(error[0]); // error[0] - error message
     }
+
   }
 };
