@@ -1,5 +1,4 @@
 var exec = require('cordova/exec');
-var axios = require('axios);
 
 module.exports = {
   login: function(a, b, url) {
