@@ -1,5 +1,5 @@
 {
-  "name": "Cordova-spotify-plugin-ios-android",
+  "name": "cordova-plugin-spotify",
   "version": "0.1.0",
   "description": "[![N|Solid](http://procoders.tech/art/powered.png)](http://procoders.tech/)",
   "cordova": {
