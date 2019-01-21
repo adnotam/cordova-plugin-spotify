@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-spotify",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "cordova": {
     "id": "cordova-plugin-spotify",
     "platforms": [
@@ -10,6 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zmzm/Cordova-spotify-plugin-ios-android.git"
+    "url": "git+https://github.com/zmzm/cordova-plugin-spotify.git"
   },
+  "keywords": ["ecosystem:cordova", "cordova-android", "cordova-ios"],
+  "author": "",
+  "license": "ISC",
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.5.0"
+    }
+  ]
 }
