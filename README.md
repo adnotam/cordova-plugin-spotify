@@ -4,7 +4,7 @@
 This plugin included all main functions of audio player for Spotify servise :smirk:
 
 ## Installation
-> To communicate with Spotify you need to register your application’s bundle id section in the [Developer Portal](http://developers.deezer.com/sdk/ios). This value is used to authenticate your application against Spotify client.
+> To communicate with Spotify you need to register your application’s id in the [Developer Portal](https://developer.spotify.com/). This value is used to authenticate your application against Spotify client.
 
 
 
@@ -25,7 +25,7 @@ cordova plugin rm cordova.plugin.spotify
 It will be fixed when this methods will be in Spotify SDK
 
 # Using the plugin
-> **You must have premium account from Deezer servise for playing music** :exclamation:
+> **You must have premium account from Spotify service for playing music** :exclamation:
 
 After device is ready you must defined the main variable:
 ```javascript
