@@ -632,9 +632,6 @@ public class SpotifyPlugin extends CordovaPlugin implements
         }
 
         Log.i(TAG, "Playing URI: " + uri);
-        JSONArray array = new JSONArray();
-        array.put("Player is playing!");
-        sendUpdate("onSuccess", new Object[]{array});
         currentPlayer.playUri(mOperationCallback, uri, 0, 0);
         callbackContext.success("Player is playing!");
     }
