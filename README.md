@@ -10,11 +10,11 @@ This plugin included all main functions of audio player for Spotify servise :smi
 
 You may install latest version from master
 ```sh
-cordova plugin add https://github.com/jeweller1980stepanets/Cordova-spotify-plugin-ios-android
+cordova plugin add https://github.com/adnotam/cordova-plugin-spotify
 ```
 ### Removing the Plugin from project
 ```sh
-cordova plugin rm cordova.plugin.spotify
+cordova plugin rm cordova-plugin-spotify
 ```
 ## Supported Platforms
 > - Android

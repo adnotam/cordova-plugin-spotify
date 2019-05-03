@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zmzm/cordova-plugin-spotify.git"
+    "url": "git+https://github.com/adnotam/cordova-plugin-spotify.git"
   },
   "keywords": ["ecosystem:cordova", "cordova-android", "cordova-ios"],
   "author": "",
