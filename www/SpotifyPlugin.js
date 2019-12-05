@@ -1,25 +1,6 @@
 var exec = require('cordova/exec');
 
 module.exports = {
-  login: function(a, b, url) {
-      var swap = url + '/swap';
-      var refresh = url + '/refresh';
-
-      exec(
-        function() { },
-        function() { },
-        "SpotifyPlugin",
-        "login",
-        [a, b, swap, refresh]
-      );
-    },
-  loadUserPlaylists: function(success, error, token) { exec(success, error, "SpotifyPlugin", "playlists", [token]); },
-  loadUserAlbums: function(success, error, token) { exec(success, error, "SpotifyPlugin", "albums", [token]); },
-  loadFeaturedPlaylists: function(success, error, token) { exec(success, error, "SpotifyPlugin", "featuredPls", [token]); },
-  loadUserAlbumTracks: function(success, error, id, token) { exec(success, error, "SpotifyPlugin", "albumTracks", [id, token]); },
-  loadUserPlaylistTracks: function(success, error, id, token) { exec(success, error, "SpotifyPlugin", "playlistTracks", [id, token]); },
-  loadFeaturedTracks: function(success, error, id, token) { exec(success, error, "SpotifyPlugin", "featuredTracks", [id, token]); },
-  getPosition: function(success, error) { exec(success, error, "SpotifyPlugin", "getPosition", []); },
   auth: function(success, error, token, id) {
     exec(
       success,
@@ -27,6 +8,61 @@ module.exports = {
       "SpotifyPlugin",
       "auth",
       [token, id]
+    );
+  },
+  getPosition: function(success, error) { exec(success, error, "SpotifyPlugin", "getPosition", []); },
+  getToken: function(success, error) {
+    exec(
+      success, // function(res){alert(res);},//res - TOKEN
+      error, // function(){console.log("error");},
+      "SpotifyPlugin",
+      "getToken",
+      []
+    );
+  },
+  loadFeaturedPlaylists: function(success, error, token) { exec(success, error, "SpotifyPlugin", "featuredPlaylists", [token]); },
+  loadFeaturedPlaylistTracks: function(success, error, id, token) { exec(success, error, "SpotifyPlugin", "featuredPlaylistTracks", [id, token]); },
+  loadUserAlbums: function(success, error, token) { exec(success, error, "SpotifyPlugin", "userAlbums", [token]); },
+  loadUserAlbumTracks: function(success, error, id, token) { exec(success, error, "SpotifyPlugin", "userAlbumTracks", [id, token]); },
+  loadUserPlaylists: function(success, error, token) { exec(success, error, "SpotifyPlugin", "userPlaylists", [token]); },
+  loadUserPlaylistTracks: function(success, error, id, token) { exec(success, error, "SpotifyPlugin", "userPlaylistTracks", [id, token]); },
+  login: function(success, error, a, b, url) {
+    var swap = url + '/swap';
+    var refresh = url + '/refresh';
+
+    exec(
+      success,
+      error,
+      "SpotifyPlugin",
+      "login",
+      [a, b, swap, refresh]
+    );
+  },
+  logout: function() {
+    exec(
+      function() {},
+      function() {},
+      "SpotifyPlugin",
+      "logout",
+      []
+    );
+  },
+  next: function() {
+    exec(
+      function() {},
+      function() {},
+      "SpotifyPlugin",
+      "next",
+      []
+    );
+  },
+  pause: function(error) {
+    exec(
+      function() {},
+      error,
+      "SpotifyPlugin",
+      "pause",
+      []
     );
   },
   play: function(success, error, val) {
@@ -38,55 +74,37 @@ module.exports = {
       [val]
     );
   },
-  pause: function() {
-    exec(
-      function() { },
-      function() { },
-      "SpotifyPlugin",
-      "pause",
-      []
-    );
-  },
-  next: function() {
-    exec(
-      function() { },
-      function() { },
-      "SpotifyPlugin",
-      "next",
-      []
-    );
-  },
   prev: function() {
     exec(
-      function() { },
-      function() { },
+      function() {},
+      function() {},
       "SpotifyPlugin",
       "prev",
       []
     );
   },
-  logout: function() {
+  resume: function() {
     exec(
-      function() { },
-      function() { },
+      function() {},
+      function() {},
       "SpotifyPlugin",
-      "logout",
+      "resume",
       []
     );
   },
   seek: function(val) {
     exec(
-      function() { },
-      function() { },
+      function() {},
+      function() {},
       "SpotifyPlugin",
       "seek",
       [val]
     );
   },
-  seekTo: function(val) {
+  seekTo: function(error, val) {
     exec(
-      function() { },
-      function() { },
+      function() {},
+      error,
       "SpotifyPlugin",
       "seekTo",
       [val]
@@ -94,59 +112,67 @@ module.exports = {
   },
   setVolume: function(val) {
     exec(
-      function() { },
-      function() { },
+      function() {},
+      function() {},
       "SpotifyPlugin",
-      "volume",
+      "setVolume",
       [val]
-    );
-  },
-  getToken: function(success, error) {
-    exec(
-      success, // function(res){alert(res);},//res - TOKEN
-      error, // function(){console.log("error");},
-      "SpotifyPlugin",
-      "getToken",
-      []
     );
   },
 
   Events: {
-    onPlayerPlay: function(args) { },
-    onMetadataChanged: function(args) { },
-    onPrev: function(args) {
-      // arg[0] - action
+    onConnectionMessage: function(args) {
+      alert(args[0]); // message
     },
-    onNext: function(args) {
-      // arg[0] - action
+    onError: function(args) {
+      alert(args[0]); // error
     },
-    onPause: function(args) {
-      // arg[0] - action
+    onLoggedIn: function(args) {
+      alert(args[0]); // access token
     },
-    onPlay: function(args) {
-      // arg[0] - action
+    onLoggedOut: function() {},
+    onLoginFailed: function(args) {
+      alert(args[0]); // error code
     },
-    onAudioFlush: function(arg) {
-      // arg[0] - position (ms)
+    onLoginResponse: function(args) {
+      alert(args[0]); // response type
     },
-    onTrackChanged: function(arg) {
-      // arg[0] - action
+    onPlayback: {
+      AudioFlush: function(args) {
+        alert(args[0]); // position (ms)
+      },
+      BecameActive: function() {},
+      BecameInactive: function() {},
+      ContextChanged: function(args) {
+        alert(arg[0]); // context name
+      },
+      DeliveryDone: function() {},
+      Error: function(args) {
+        alert(args[0]); // error message
+      },
+      LostPermission: function() {},
+      MetadataChanged: function(args) {
+        alert(args);
+        // args[0] - currentTrack.name
+        // args[1] - currentTrack.artistName
+        // args[2] - currentTrack.albumName
+        // args[3] - currentTrack.durationMs
+      },
+      Next: function() {},
+      Pause: function() {},
+      Play: function() {},
+      Position: function(args) {
+        alert(arg[0]); // position (ms)
+      },
+      Prev: function() {},
+      RepeatOff: function() {},
+      RepeatOn: function() {},
+      ShuffleOff: function() {},
+      ShuffleOn: function() {},
+      TrackChanged: function() {},
+      TrackDelivered: function() {}
     },
-    onPosition: function(arg) {
-      // arg[0] - position ms
-    },
-    onVolumeChanged: function(arg) {
-      // arg - volume betwen 0.0 ....1.0
-    },
-    onLogedIn: function(arg) {
-      alert(arg);
-    },
-    onDidNotLogin: function(arg) {
-      alert(arg);
-    },
-    onPlayError: function(error) {
-      alert(error[0]); // error[0] - error message
-    }
-
+    onSuccess: function() {},
+    onTemporaryError: function() {}
   }
 };

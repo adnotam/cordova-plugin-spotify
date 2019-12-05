@@ -37,113 +37,241 @@ var Spotify = window.cordova.plugins.SpotifyPlugin;
 All methods returning promises, but you can also use standard callback functions.
 
 ```javascript
-Spotify.login(appId, redirectURL, mode);
+Spotify.auth(success, error, token, clientId);
 ```
-> - *appId* - your application id in Spotify
-> - *redirectURL* - White-listed addresses to redirect to after authentication success OR failure 
-> - *mode* - The mode of debugging, if you use Xcode emulator its value should be "debug" else empty string
-
-
-```javascript
-Spotify.auth(token,clientId);
-```
+> - success - success callback
+> - error - error callback
 > - token - spotify access token;
 > - clientId - your application id in Spotify.
 
 ```javascript
-Spotify.play(value);
+Spotify.getPosition(success, error);
 ```
-> - *value* - track id or album id or playlist id
+> - success - success callback
+> - error - error callback
 
-**Exemple:**
-> Spotify.play("spotify:track:3qRNQHagYiiDLdWMSOkPGG");
-> Spotify.play("spotify:album:75Sgdm3seM5KXkEd46vaDb");
-> Spotify.play("spotify:user:spotify:playlist:2yLXxKhhziG2xzy7eyD4TD");
+```javascript
+Spotify.getToken(success, error);
+```
+> - success - success callback
+> - error - error callback
+
+```javascript
+Spotify.loadFeaturedPlaylists (success, error, token);
+```
+> - success - success callback
+> - error - error callback
+> - token - access token
+
+```javascript
+Spotify.loadFeaturedPlaylistTracks (success, error, id, token);
+```
+> - success - success callback
+> - error - error callback
+> - id - Featured Playlist's ID
+> - token - access token
+
+```javascript
+Spotify.loadUserAlbums (success, error, token);
+```
+> - success - success callback
+> - error - error callback
+> - token - access token
 
 
 ```javascript
-Spotify.pause();
-Spotify.next();
-Spotify.prev();
+Spotify.loadUserAlbumTracks (success, error, id, token);
+```
+> - success - success callback
+> - error - error callback
+> - id - User album's ID
+> - token - access token
+
+```javascript
+Spotify.loadUserPlaylists (success, error, token);
+```
+> - success - success callback
+> - error - error callback
+> - token - access token
+
+```javascript
+Spotify.loadUserPlaylistTracks (success, error, id, token);
+```
+> - success - success callback
+> - error - error callback
+> - id - User Playlist's ID
+> - token - access token
+
+```javascript
+Spotify.login(success, error, appId, redirectURL, mode);
+```
+> - success - success callback
+> - error - error callback
+> - *appId* - your application id in Spotify
+> - *redirectURL* - White-listed addresses to redirect to after authentication success OR failure
+> - *mode* - The mode of debugging, if you use Xcode emulator its value should be "debug" else empty string
+
+```javascript
 Spotify.logout();
 ```
+
+```javascript
+Spotify.next();
+```
+
+```javascript
+Spotify.pause(error);
+```
+> - error - error callback
+
+```javascript
+Spotify.play(success, error, value);
+```
+> - success - success callback
+> - error - error callback
+> - *value* - track id or album id or playlist id
+
+    Example:
+    > Spotify.play(success, error, "spotify:track:3qRNQHagYiiDLdWMSOkPGG");
+    > Spotify.play(success, error, "spotify:album:75Sgdm3seM5KXkEd46vaDb");
+    > Spotify.play(success, error, "spotify:user:spotify:playlist:2yLXxKhhziG2xzy7eyD4TD");
+
+```javascript
+Spotify.prev();
+```
+
+```javascript
+Spotify.resume();
+```
+
 ```javascript
 Spotify.seek(position);
 ```
 > *position* - value between 0...100 %
 
 ```javascript
-Spotify.seekTo(position);
+Spotify.seekTo(error, position);
 ```
+> - error - error callback
 > *position* - value in seconds
-
-```javascript
-Spotify.setVolume(val1,val2);
-```
-> *val1,val2* - the volume for the left and right channel (between 0...100%)
-
 
 ## Events
 ```javascript
-Spotify.Events.onMetadataChanged = function(args){};
+Spotify.Events.onConnectionMessage = function(args){};
 ```
-> *args[0]* - current track;
-> *args[1]* - artist name;
-> *args[2]* - album name;
-> *args[3]* - track duration.
+> *args[0]* - message;
 
 ```javascript
-Spotify.Events.onPlayerPlay = function(arg){};
+Spotify.Events.onLoggedIn = function(args){};
 ```
-> *arg* - name of event (string)
+> *args[0]* - access token;
 
 ```javascript
-Spotify.Events.onPrev = function(args){};
+Spotify.Events.onLoggedOut = function(){};
 ```
-> *args[0]*  - action name;
 
 ```javascript
-Spotify.Events.onNext = function(args){};
+Spotify.Events.onLoginFailed = function(args){};
 ```
-> *args[0]*  - action name;        
-     
-```javascript
-Spotify.Events.onPause = function(args){};
-```
-> *args[0]*  - action name;    
+> *args[0]* - error code;
 
 ```javascript
-Spotify.Events.onPlay = function(args){};
+Spotify.Events.onLoginResponse = function(args){};
 ```
-> *args[0]*  - action name; 
-      
-```javascript
-Spotify.Events.onAudioFlush = function(args){};
-```
-> *args[0]*  - position (ms); 
-   
-```javascript
-Spotify.Events.onTrackChanged = function(args){};
-```
-> *args[0]*  - action name;      
-  
-```javascript
-Spotify.Events.onPosition = function(args){};
-```
-> *args[0]*  - position (ms);      
-      
-```javascript
-Spotify.Events.onVolumeChanged = function(args){};
-```
-> *args[0]*  - volume betwen 0.0 ....1.0
+> *args[0]* - response type;
 
 ```javascript
-Spotify.Events.onPlayError = function(error){};
+Spotify.Events.onPlayback.AudioFlush = function(args){};
 ```
-> *error[0]*  - error message
-    
+> *args[0]*  - position (ms);
+
+```javascript
+Spotify.Events.onPlayback.BecameActive = function(){};
+```
+
+```javascript
+Spotify.Events.onPlayback.BecameInactive = function(){};
+```
+
+```javascript
+Spotify.Events.onPlayback.ContextChanged = function(args){};
+```
+> *args[0]*  - position (ms);
+
+```javascript
+Spotify.Events.onPlayback.DeliveryDone = function(){};
+```
+
+```javascript
+Spotify.Events.onPlayback.Error = function(args){};
+```
+> *args[0]*  - error message
+
+```javascript
+Spotify.Events.onPlayback.LostPermission = function(){};
+```
+
+```javascript
+Spotify.Events.onPlayback.MetadataChanged = function(args){};
+```
+> *args[0]* - current track name
+> *args[1]* - artist name
+> *args[2]* - album name
+> *args[3]* - track duration (ms)
+
+```javascript
+Spotify.Events.onPlayback.Next = function(args){};
+```
+
+```javascript
+Spotify.Events.onPlayback.Pause = function(){};
+```
+
+```javascript
+Spotify.Events.onPlayback.Play = function(){};
+```
+
+```javascript
+Spotify.Events.onPlayback.Position = function(args){};
+```
+> *args[0]*  - position (ms)
+
+```javascript
+Spotify.Events.onPlayback.Prev = function(){};
+```
+
+```javascript
+Spotify.Events.onPlayback.RepeatOff = function(){};
+```
+
+```javascript
+Spotify.Events.onPlayback.RepeatOn = function(){};
+```
+
+```javascript
+Spotify.Events.onPlayback.ShuffleOff = function(){};
+```
+
+```javascript
+Spotify.Events.onPlayback.ShuffleOn = function(){};
+```
+
+```javascript
+Spotify.Events.onPlayback.TrackChanged = function(){};
+```
+
+```javascript
+Spotify.Events.onPlayback.TrackDelivered = function(){};
+```
+
+```javascript
+Spotify.Events.onSuccess = function(){};
+```
+
+```javascript
+Spotify.Events.onTemporaryError = function(){};
+```
+
 ### Authors
  - Aleksey Stepanets
-
-
-[![N|Solid](http://procoders.tech/art/powered.png)](http://procoders.tech/)
+ - Antonio Facciolo

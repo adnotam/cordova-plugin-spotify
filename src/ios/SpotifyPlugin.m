@@ -33,7 +33,7 @@
 }
 -(void)login :(CDVInvokedUrlCommand*)command
 {
-    
+
     __weak SpotifyPlugin* weakSelf = self;
     // NSLog(@"SpotifyPlugin - %@ - %@",[command.arguments objectAtIndex:0],[command.arguments objectAtIndex:1]);
     SPTAuth *auth = [SPTAuth defaultInstance];
@@ -47,18 +47,18 @@
     }
     auth.sessionUserDefaultsKey = @kSessionUserDefaultsKey;
     NSString *responseType = @"token";
-    
+
     __block id observer;
-    
+
     [self.commandDelegate runInBackground:^{
-        
+
         SPTAuthCallback callback = ^(NSError *error, SPTSession *session) {
             CDVPluginResult *pluginResult;
-            
+
             if (error != nil) {
                 if(error.code==400 && self.firstLoad == YES){
                         [self.player loginWithAccessToken:auth.session.accessToken];
-                         [self.commandDelegate evalJs:@"window.cordova.plugins.SpotifyPlugin.Events.onLogedIn(['logged in'])"];
+                         [self.commandDelegate evalJs:@"window.cordova.plugins.SpotifyPlugin.Events.onLoggedIn(['logged in'])"];
                     }else{
                         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
                         [self.commandDelegate evalJs:@"window.cordova.plugins.SpotifyPlugin.Events.onDidNotLogin(['Did not login'])"];
@@ -79,38 +79,38 @@
                         self.player.diskCache = [[SPTDiskCache alloc] initWithCapacity:1024 * 1024 * 64];
                         [self.player loginWithAccessToken:auth.session.accessToken];
                         NSLog(@"SpotifyPlugin player init");
-                        [self.commandDelegate evalJs:@"window.cordova.plugins.SpotifyPlugin.Events.onLogedIn(['logged in'])"];
+                        [self.commandDelegate evalJs:@"window.cordova.plugins.SpotifyPlugin.Events.onLoggedIn(['logged in'])"];
                     } else {
                         self.player = nil;
                         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error init" message:[error description] preferredStyle:UIAlertControllerStyleAlert];
                         [alert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:nil]];
-                        
+
                     }
                 }
             }
-            
+
             [weakSelf.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         };
-        
+
         observer = [[NSNotificationCenter defaultCenter]
                     addObserverForName:CDVPluginHandleOpenURLNotification
                     object:nil queue:nil usingBlock:^(NSNotification *note) {
                         NSURL *url = [note object];
                         SPTAuth *auth = [SPTAuth defaultInstance];
-                        
+
                         if ([auth canHandleURL:url]) {
                             [auth handleAuthCallbackWithTriggeredAuthURL:url callback:callback];
                             return;
                         }
-                        
-                        
+
+
                         if ([responseType isEqualToString:@"token"])
                             return [[SPTAuth defaultInstance]
                                     handleAuthCallbackWithTriggeredAuthURL:url
                                     callback:callback];
                     }
                     ];
-        
+
         if ([SPTAuth supportsApplicationAuthentication]){
             [[UIApplication sharedApplication] openURL:auth.spotifyAppAuthenticationURL];
         }else{
@@ -118,7 +118,7 @@
         }
     }];
 
-   
+
 }
 -(void)auth:(CDVInvokedUrlCommand*)command{
     SPTAuth *auth = [SPTAuth defaultInstance];
@@ -131,12 +131,12 @@
             self.player.diskCache = [[SPTDiskCache alloc] initWithCapacity:1024 * 1024 * 64];
             [self.player loginWithAccessToken:[command.arguments objectAtIndex:0]];
             NSLog(@"SpotifyPlugin player init");
-            [self.commandDelegate evalJs:@"window.cordova.plugins.SpotifyPlugin.Events.onLogedIn(['logged in'])"];
+            [self.commandDelegate evalJs:@"window.cordova.plugins.SpotifyPlugin.Events.onLoggedIn(['logged in'])"];
         } else {
             self.player = nil;
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error init" message:[error description] preferredStyle:UIAlertControllerStyleAlert];
             [alert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:nil]];
-            
+
         }
     }
 }
@@ -149,14 +149,14 @@
     [arr addObject:[[[SPTAuth defaultInstance] session] accessToken]];
     [arr addObject:[[[SPTAuth defaultInstance] session] encryptedRefreshToken]];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:arr];
-    
+
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    
+
 }
 -(void)play:(CDVInvokedUrlCommand*)command
 {
     NSMutableString *str = [NSMutableString stringWithString:@"window.cordova.plugins.SpotifyPlugin.Events.onPlayError(['"];
-   
+
     NSString * str1 = [command.arguments objectAtIndex:0];
     NSLog(@"SpotifyPlayer track %@",str1);
     if(![self.player delegate]){
@@ -182,7 +182,7 @@
     NSLog(@"SpotifyPlayer action next");
     [self.player skipNext:nil];
     [self myPluginMethod:command];
-    
+
 }
 -(void)prev:(CDVInvokedUrlCommand*)command
 {
@@ -205,7 +205,7 @@
             }
         }
         [[NSUserDefaults standardUserDefaults] synchronize];
-      
+
     }
 }
 -(void)seek:(CDVInvokedUrlCommand*)command
@@ -213,26 +213,26 @@
     NSTimeInterval offset = ((NSNumber *)[command.arguments objectAtIndex:0]).doubleValue;
     offset=self.player.metadata.currentTrack.duration * offset/100;
     [self.commandDelegate runInBackground:^{
-        
-        
-        
+
+
+
         [self.player seekTo:offset callback:^(NSError *error) {
             CDVPluginResult *pluginResult;
-            
+
             if (error != nil) {
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: error.localizedDescription];
             } else {
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
             }
-            
+
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }];
     }];
     NSMutableString *str = [NSMutableString stringWithString:@"window.cordova.plugins.SpotifyPlugin.Events.onAudioFlush(["];
     [str appendFormat:@"%f])",offset];
-    
+
     [self.commandDelegate evalJs:str];
-    
+
     NSLog(@"SpotifyPlayer action seek %f ms",offset);
 }
     -(void)seekTo:(CDVInvokedUrlCommand*)command
@@ -240,26 +240,26 @@
         NSTimeInterval offset = ((NSNumber *)[command.arguments objectAtIndex:0]).doubleValue;
         if(offset > 0 && offset < self.player.metadata.currentTrack.duration){
         [self.commandDelegate runInBackground:^{
-            
-            
-            
+
+
+
             [self.player seekTo:offset callback:^(NSError *error) {
                 CDVPluginResult *pluginResult;
-                
+
                 if (error != nil) {
                     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: error.localizedDescription];
                 } else {
                     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
                 }
-                
+
                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
             }];
         }];
         NSMutableString *str = [NSMutableString stringWithString:@"window.cordova.plugins.SpotifyPlugin.Events.onAudioFlush(["];
         [str appendFormat:@"%f])",offset];
-        
+
         [self.commandDelegate evalJs:str];
-        
+
         NSLog(@"SpotifyPlayer action seek %f ms",offset);
         } else {
             NSString *error = @"incorrect duration";
@@ -271,26 +271,26 @@
 -(void)volume:(CDVInvokedUrlCommand*)command
 {
     NSLog(@"SpotifyPlayer action volume%@", [command.arguments objectAtIndex:0]);
-    
+
     [self.commandDelegate runInBackground:^{
-        
-        
+
+
         SPTVolume volume = [[command.arguments objectAtIndex:0] doubleValue];
         volume/=100;
         [self.player setVolume:volume callback:^(NSError *error) {
             CDVPluginResult *pluginResult;
-            
+
             if (error != nil) {
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString: error.localizedDescription];
             } else {
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
             }
-            
+
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }];
     }];
-    
-    
+
+
 }
 /////////////////////////////////////////////////////////////////
 //                          EVENTS                             //
@@ -298,11 +298,11 @@
 
 - (void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangePlaybackStatus:(BOOL)isPlaying {
     NSLog(@"is playing = %d", isPlaying);
-    
+
     if (isPlaying) {
-        
+
         [self.commandDelegate evalJs:@"window.cordova.plugins.SpotifyPlugin.Events.onPlay(['Player play'])"];
-        
+
     } else {
         [self.commandDelegate evalJs:@"window.cordova.plugins.SpotifyPlugin.Events.onPause(['Player paused'])"];
     }
@@ -348,7 +348,7 @@
 - (void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangePosition:(NSTimeInterval)position {
     NSMutableString *str = [NSMutableString stringWithString:@"window.cordova.plugins.SpotifyPlugin.Events.onPosition("];
     [str appendFormat:@"%f)",position*1000];
-    
+
     [self.commandDelegate evalJs:str];
     NSLog(@"SpotifyPlugin: %@",str);
 }
@@ -356,9 +356,9 @@
 {
     NSMutableString *str = [NSMutableString stringWithString:@"window.cordova.plugins.SpotifyPlugin.Events.onVolumeChanged("];
     [str appendFormat:@"%f)",volume];
-    
+
     [self.commandDelegate evalJs:str];
-    
+
 }
 -(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didReceiveError:(NSError *)error{
     NSLog(@"%@", error);
