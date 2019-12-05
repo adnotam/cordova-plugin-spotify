@@ -804,12 +804,16 @@ public class SpotifyPlugin extends CordovaPlugin implements Player.NotificationC
       sendUpdate("onPlayback.Next", new Object[] {});
     } else if (playerEvent.name().equals(EVENT_NOTIFY_PAUSE)) {
       sendUpdate("onPlayback.Pause", new Object[] {});
+      int x = (int) currentPlayer.getPlaybackState().positionMs;
+      Log.d(TAG, "position = " + x);
+      array.put(x);
+      sendUpdate("onPlayback.Position", new Object[]{ array });
     } else if (playerEvent.name().equals(EVENT_NOTIFY_PLAY)) {
       sendUpdate("onPlayback.Play", new Object[] {});
-      // int x = (int) currentPlayer.getPlaybackState().positionMs;
-      // Log.d(TAG, "position = " + x);
-      // array.put(x);
-      // sendUpdate("onPlayback.Position", new Object[]{ array });
+      int x = (int) currentPlayer.getPlaybackState().positionMs;
+      Log.d(TAG, "position = " + x);
+      array.put(x);
+      sendUpdate("onPlayback.Position", new Object[]{ array });
     } else if (playerEvent.name().equals(EVENT_NOTIFY_PREV)) {
       sendUpdate("onPlayback.Prev", new Object[] {});
     } else if (playerEvent.name().equals(EVENT_REPEAT_OFF)) {
