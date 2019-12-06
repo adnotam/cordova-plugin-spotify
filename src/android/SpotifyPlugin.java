@@ -148,7 +148,6 @@ public class SpotifyPlugin extends CordovaPlugin implements Player.NotificationC
 
         JSONArray array = new JSONArray();
         array.put(error.getMessage());
-        sendUpdate("onError", new Object[] { array });
         callbackContext.error(error.getMessage());
       }
     } else if (ACTION_LOAD_FEATURED_PLAYLIST_TRACKS.equalsIgnoreCase(action)) {
@@ -168,7 +167,6 @@ public class SpotifyPlugin extends CordovaPlugin implements Player.NotificationC
 
         JSONArray array = new JSONArray();
         array.put(error.getMessage());
-        sendUpdate("onError", new Object[] { array });
         callbackContext.error(error.getMessage());
       }
     } else if (ACTION_LOAD_USER_ALBUMS.equalsIgnoreCase(action)) {
@@ -186,7 +184,6 @@ public class SpotifyPlugin extends CordovaPlugin implements Player.NotificationC
 
         JSONArray array = new JSONArray();
         array.put(error.getMessage());
-        sendUpdate("onError", new Object[] { array });
         callbackContext.error(error.getMessage());
       }
     } else if (ACTION_LOAD_USER_ALBUM_TRACKS.equalsIgnoreCase(action)) {
@@ -206,7 +203,6 @@ public class SpotifyPlugin extends CordovaPlugin implements Player.NotificationC
 
         JSONArray array = new JSONArray();
         array.put(error.getMessage());
-        sendUpdate("onError", new Object[] { array });
         callbackContext.error(error.getMessage());
       }
     } else if (ACTION_LOAD_USER_PLAYLISTS.equalsIgnoreCase(action)) {
@@ -224,7 +220,6 @@ public class SpotifyPlugin extends CordovaPlugin implements Player.NotificationC
 
         JSONArray array = new JSONArray();
         array.put(error.getMessage());
-        sendUpdate("onError", new Object[] { array });
         callbackContext.error(error.getMessage());
       }
     } else if (ACTION_LOAD_USER_PLAYLIST_TRACKS.equalsIgnoreCase(action)) {
@@ -244,7 +239,6 @@ public class SpotifyPlugin extends CordovaPlugin implements Player.NotificationC
 
         JSONArray array = new JSONArray();
         array.put(error.getMessage());
-        sendUpdate("onError", new Object[] { array });
         callbackContext.error(error.getMessage());
       }
     } else if (ACTION_LOGIN.equalsIgnoreCase(action)) {

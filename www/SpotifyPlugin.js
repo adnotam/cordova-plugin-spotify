@@ -144,7 +144,7 @@ module.exports = {
       BecameActive: function() {},
       BecameInactive: function() {},
       ContextChanged: function(args) {
-        alert(arg[0]); // context name
+        alert(args[0]); // context name
       },
       DeliveryDone: function() {},
       Error: function(args) {
@@ -162,7 +162,7 @@ module.exports = {
       Pause: function() {},
       Play: function() {},
       Position: function(args) {
-        alert(arg[0]); // position (ms)
+        alert(args[0]); // position (ms)
       },
       Prev: function() {},
       RepeatOff: function() {},
